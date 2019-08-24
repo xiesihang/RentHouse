@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
+
+  <!--
+  口诀：
+       全局监听
+       骑马异步走
+       servlet优先补充维生素C
+  -->
+
+
+
+
+
+  <!--加载Spring配置文件-->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring/applicationContext.xml</param-value><!--关联到Spring配置文件的路径地址-->
+  </context-param>
+
+
+
+
+  <!--servlet本在web.xml文件中配置,但SpringMVC代替了servlet,所以SpringMVC必须在这里要配置,而且要优先加载-->
+  <!--加载SpringMVC配置文件-->
+  <!-- 配置DispatcherServlet，来加载springmvc的配置拦截所有的请求 都进入 spring中的 DispatcherServlet
+          1.解析请求路径
+          2.分配 给 对应的方法来处理请求
+          3.试图解析器 来 找到 对应的jsp-->
+  <servlet>
+    <servlet-name>DispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:springmvc/SpringMVC.xml</param-value><!--关联到SpringMVC配置文件的路径地址-->
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DispatcherServlet</servlet-name>
+    <url-pattern>/</url-pattern>  <!--/：包含所有的servlet请求路径,不包含资源路径-->
+  </servlet-mapping>
+
+
+
+
+  <!-- 配置监听器加载spring的配置文件 -->
+  <listener>
+    <!--初始化方法中 把context 对象 存进了 web最大的域对象中 -->
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+
+
+
+  <!-- 配置过滤器，过滤编码格式 为utf-8,只支持post提交-->
+  <filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <!--异步支持  -->
+    <async-supported>true</async-supported>
+    <!-- 初始化 编码格式为UTF-8,只适用于post提交-->
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern> <!--/：包含所有的servlet请求路径,也包含所有的资源路径-->
+  </filter-mapping>
+
+
+
+
+
+</web-app>
